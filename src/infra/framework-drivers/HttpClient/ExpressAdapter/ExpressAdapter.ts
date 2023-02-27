@@ -9,10 +9,10 @@ export class ExpressAdapter implements IHttpClient {
     this.app = express();
   }
 
-  async register(method: string, url: string, callback: Function) {
-    this.app[method](url, async function (request: any, response: any) {
+  async register(method: string, url: string, callback: Function, statusCode: number) {
+    return this.app[method](url, async function (request: any, response: any) {
       const output = await callback(request.params, request.body);
-      response.json(output);
+      response.status(statusCode).json(output);
     })
   }
 

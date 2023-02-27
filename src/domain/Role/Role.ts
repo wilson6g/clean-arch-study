@@ -9,7 +9,7 @@ export type InputRole = {
 
 export class Role {
 
-  readonly id: string;
+  readonly id?: string;
   name: string;
   description: string;
 
@@ -18,8 +18,6 @@ export class Role {
     this.name = props.name;
     this.description = props.description;
   }
-
-  
 
   roleIsExists(input: InputRole, roles: InputRole[]): boolean {
     const role = roles.find((role) => role.name == input.name);

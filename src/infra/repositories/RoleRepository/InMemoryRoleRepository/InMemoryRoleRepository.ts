@@ -1,7 +1,7 @@
 import { Role } from "../../../../domain/Role/Role";
 
 export type RoleType = {
-  id: string;
+  id?: string;
   name: string;
   description: string;
 }
@@ -15,7 +15,7 @@ export class InMemoryRoleRepository {
   }
 
   async save(input: Role): Promise<Role> {
-    const output = await this.findByName(input.id);
+    const output = await this.findByName(input.id!);
 
     if (output) {
       throw new Error("Cargo já existe!");
