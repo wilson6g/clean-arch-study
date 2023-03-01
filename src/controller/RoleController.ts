@@ -3,7 +3,7 @@ import { Role } from "../domain/Role/Role";
 import { IHttpClient } from "../infra/framework-drivers/HttpClient/IHttpClient";
 import { CreateRoleUseCase } from "../useCases/Role/CreateRole/CreateRoleUseCase";
 import { DeleteRoleUseCase } from "../useCases/Role/DeleteRole/DeleteRoleUseCase";
-import { FindRoleUseCase } from "../useCases/Role/FindRoleUseCase/FindRoleUseCase";
+import { FindRoleUseCase } from "../useCases/Role/FindRole/FindRoleUseCase";
 import { GetAllRoleUseCase } from "../useCases/Role/GetAllRole/GetAllRoleUseCase";
 
 export class RoleController {
@@ -21,7 +21,6 @@ export class RoleController {
     }, HttpStatus.OK)
 
     this.httpServer.register("get", "/role/:id", (params: any, body: any) => {
-      console.log(params);
       const output = this.findRoleUseCase.execute(params.id);
 
       return output;

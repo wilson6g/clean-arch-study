@@ -6,7 +6,7 @@ export class PgPromiseAdapter implements IConnection {
   private app: any
 
   constructor() {
-    this.app = pgp()("postgres://postgres:password@localhost:5432/inventory");
+    this.app = pgp()("postgres://postgres:password@localhost:5432/inventorydb");
   }
 
   async one(statement: string, params?: string | undefined): Promise<any> {

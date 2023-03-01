@@ -7,17 +7,17 @@ export class RoleRepository implements IRepository<Role> {
   constructor(private readonly connection: IConnection) { }
 
   async save(input: Role): Promise<Role> {
-    const output = await this.connection.query(`INSERT INTO inventory.public.role (id, name, description) VALUES ('${input.id}', '${input.name}', '${input.description}') RETURNING *`);
+    const output = await this.connection.query(`INSERT INTO inventorydb.public.role (id, name, description) VALUES ('${input.id}', '${input.name}', '${input.description}') RETURNING *`);
 
     return output;
   }
   async findAll(): Promise<Role[]> {
-    const output = await this.connection.query("SELECT * FROM role");
+    const output = await this.connection.query("SELECT * FROM inventorydb.public.role");
 
     return output;
   }
   async find(id: string): Promise<Role> {
-    const output = await this.connection.one(`SELECT * FROM role WHERE id = $1`, id);
+    const output = await this.connection.one(`SELECT * FROM inventorydb.public.role WHERE id = $1`, id);
 
     return output;
   }
