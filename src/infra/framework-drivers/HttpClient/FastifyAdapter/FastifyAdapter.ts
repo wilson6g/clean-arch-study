@@ -13,8 +13,8 @@ export class FastifyAdapter implements IHttpClient {
 
   register(method: string, url: string, callback: Function, statusCode: number): Promise<void> {
     return this.app[method](url, async function (request: any, reply: any) {
-      const output = await callback(reply.params, request.body);
-      reply.code(statusCode).send({ output })
+      const output = await callback(request.params, request.body);
+      reply.code(statusCode).send(output)
     })
   }
 
