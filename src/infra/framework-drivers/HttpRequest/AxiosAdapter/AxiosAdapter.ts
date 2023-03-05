@@ -13,18 +13,14 @@ export class AxiosAdapter implements IHttpRequest {
   }
 
   async get(uri: string, params?: string): Promise<any> {
-    try {
-      if (params) {
-        const output = await this.app.get(`${uri}/${params}`);
-        return output.data;
-      }
-
-      const output = await this.app.get(`${uri}`);
-
+    if (params) {
+      const output = await this.app.get(`${uri}/${params}`);
       return output.data;
-    } catch (error) {
-      console.log(error);
     }
+
+    const output = await this.app.get(`${uri}`);
+
+    return output.data;
   }
 
   async post(uri: string, body: any): Promise<any> {

@@ -1,10 +1,11 @@
-import { HttpStatus } from "../commons/HttpStatus/HttpStatus";
-import { User } from "../domain/User/User";
 import { IHttpClient } from "../infra/framework-drivers/HttpClient/IHttpClient";
+import { RegisterUserResponse } from "../useCases/User/CreateUser/CreateUserResponse";
 import { CreateUserUseCase } from "../useCases/User/CreateUser/CreateUserUseCase";
 import { DeleteUserUseCase } from "../useCases/User/DeleteUser/DeleteUserUseCase";
 import { FindUserUseCase } from "../useCases/User/FindUser/FindUserUseCase";
 import { GetAllUserUseCase } from "../useCases/User/GetAllUser/GetAllUserUseCase";
+import { MissingParamError } from "./Errors";
+import { badRequest, created, deleted, ok, serverError } from "./HttpHelpers/HttpHelpers";
 
 export class UserController {
 
@@ -14,34 +15,60 @@ export class UserController {
     readonly deleteUserUseCase: DeleteUserUseCase,
     readonly findUserUseCase: FindUserUseCase) {
 
-    this.httpServer.register("get", "/user", (params: any, body: any) => {
-      const output = this.getAllUserUseCase.execute();
+    this.httpServer.register("get", "/user", async (params: any, body: any) => {
+      try {
+        const output = await this.getAllUserUseCase.execute();
 
-      return output;
-    }, HttpStatus.OK)
+        return ok(output);
+      } catch (error) {
+        return serverError('internal')
+      }
+    });
 
-    this.httpServer.register("get", "/user/:id", (params: any, body: any) => {
-      const output = this.findUserUseCase.execute(params.id);
+    this.httpServer.register("get", "/user/:id", async (params: any, body: any) => {
+      try {
+        const output = await this.findUserUseCase.execute(params.id);
 
-      return output;
-    }, HttpStatus.OK)
+        return ok(output);
+      } catch (error) {
+        return serverError('internal')
+      }
+    });
 
-    this.httpServer.register("post", "/user", (params: any, body: any) => {
-      const user = new User({
-        name: body.name,
-        email: body.email,
-        password: body.password
-      })
+    this.httpServer.register("post", "/user", async (params: any, body: any) => {
+      try {
+        if (!body.name || !body.email || !body.password) {
+          const field = !body.name ? 'name' : 'email'
+          return badRequest(new MissingParamError(field))
+        }
 
-      const output = this.createUserUseCase.execute(user);
+        const userData = {
+          name: body.name,
+          email: body.email,
+          password: body.password
+        };
 
-      return output;
-    }, HttpStatus.CREATED)
+        const registerUserResponse: RegisterUserResponse = await this.createUserUseCase.execute(userData);
 
-    this.httpServer.register("delete", "/User/:id", (params: any, body: any) => {
-      const output = this.deleteUserUseCase.execute(params.id);
+        if (registerUserResponse.isLeft()) {
+          return badRequest(registerUserResponse.value)
+        }
 
-      return output;
-    }, HttpStatus.NO_CONTENT);
+        return created(userData)
+      } catch (error) {
+        console.log(error);
+        return serverError('internal')
+      }
+    });
+
+    this.httpServer.register("delete", "/user/:id", async (params: any, body: any) => {
+      try {
+        await this.deleteUserUseCase.execute(params.id);
+
+        return deleted();
+      } catch (error) {
+        return serverError('internal')
+      }
+    });
   }
 }

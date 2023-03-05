@@ -1,4 +1,4 @@
-import { Role } from "../../../domain/Role/Role";
+import { InputRole, Role } from "../../../domain/Role/Role";
 import { IRepository } from "../../../infra/repositories/IRepository";
 
 export class CreateRoleUseCase {
