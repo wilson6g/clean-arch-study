@@ -1,10 +1,11 @@
-import { Role } from "../domain/Role/Role";
 import { IHttpClient } from "../infra/framework-drivers/HttpClient/IHttpClient";
+import { RegisterRoleResponse } from "../useCases/Role/CreateRole/CreateRoleResponse";
 import { CreateRoleUseCase } from "../useCases/Role/CreateRole/CreateRoleUseCase";
 import { DeleteRoleUseCase } from "../useCases/Role/DeleteRole/DeleteRoleUseCase";
 import { FindRoleUseCase } from "../useCases/Role/FindRole/FindRoleUseCase";
 import { GetAllRoleUseCase } from "../useCases/Role/GetAllRole/GetAllRoleUseCase";
-import { created, deleted, ok, serverError } from "./HttpHelpers/HttpHelpers";
+import { MissingParamError } from "./Errors";
+import { badRequest, created, deleted, ok, serverError } from "./HttpHelpers/HttpHelpers";
 
 export class RoleController {
 
@@ -36,14 +37,23 @@ export class RoleController {
 
     this.httpServer.register("post", "/role", async (params: any, body: any) => {
       try {
-        const role = new Role({
+        if (!body.name || !body.description) {
+          const field = !body.name ? 'name' : 'description'
+          return badRequest(new MissingParamError(field))
+        }
+
+        const roleData = {
           name: body.name,
-          description: body.description
-        })
-  
-        const output = await this.createRoleUseCase.execute(role);
-        
-        return created(output);
+          description: body.description,
+        };
+
+        const registerRoleResponse: RegisterRoleResponse = await this.createRoleUseCase.execute(roleData);
+
+        if (registerRoleResponse.isLeft()) {
+          return badRequest(registerRoleResponse.value)
+        }
+
+        return created(roleData);
       } catch (error) {
         return serverError('internal')
       }

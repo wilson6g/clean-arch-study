@@ -54,9 +54,8 @@ export class UserController {
           return badRequest(registerUserResponse.value)
         }
 
-        return created(userData)
+        return created(userData);
       } catch (error) {
-        console.log(error);
         return serverError('internal')
       }
     });

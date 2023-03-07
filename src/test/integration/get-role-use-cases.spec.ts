@@ -1,7 +1,6 @@
 import { AxiosAdapter } from "../../infra/framework-drivers/HttpRequest/AxiosAdapter/AxiosAdapter";
 
 describe('testar os endpoints de buscas de cargos', () => {
-
   test('Vai listar todos os cargos do banco de dados', async () => {
     const httpRequest = new AxiosAdapter("http://localhost:3000");
 
@@ -23,5 +22,4 @@ describe('testar os endpoints de buscas de cargos', () => {
     expect(output).toHaveProperty('description');
     expect(output).toHaveProperty('id');
   })
-
 })

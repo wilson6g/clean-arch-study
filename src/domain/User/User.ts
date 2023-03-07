@@ -1,13 +1,7 @@
 import crypto from 'crypto';
 import { Either, left, right } from '../../shared/Either/Either';
-import { InvalidEmailError } from '../Errors/InvalidEmailError';
-import { InvalidLengthPasswordError } from '../Errors/InvalidLengthPasswordError';
-import { InvalidNameError } from '../Errors/InvalidNameError';
-import { InvalidPasswordHashError } from '../Errors/InvalidPasswordHashError';
-import { UserAlreadyExistsError } from '../Errors/UserAlreadyExistsError';
-import { Email } from '../ValueObjects/Email';
-import { Name } from '../ValueObjects/Name';
-import { Password } from '../ValueObjects/Password';
+import { InvalidEmailError, InvalidLengthPasswordError, InvalidNameError, InvalidPasswordHashError, UserAlreadyExistsError } from '../Errors';
+import { Email, Name, Password } from '../ValueObjects';
 
 export type InputUser = {
   id?: string;
